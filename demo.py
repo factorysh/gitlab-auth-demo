@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 import os
-import requests
 import urllib.parse
+
+import requests
+from authlib.specs.rfc7519 import jwt
 
 
 class Gitlab:
@@ -27,8 +29,23 @@ class Gitlab:
         return r.json().get('token')
 
 
+def assert_token(raw, public="public.pem"):
+    "Read token and validate it"
+    pk = open(public, 'rb').read()
+    t = jwt.decode(raw, pk)
+    h = t.header
+    assert h['typ'] == 'JWT'
+    assert h['alg'].startswith('RS')
+    size = int(h['alg'][2:])
+    assert size >= 256
+    t.validate()
+    return t
+
+
 if __name__ == '__main__':
     g = Gitlab(os.getenv('GITLAB'))
-    t = g.token(os.getenv('PROJECT'))
-    #, client_id=os.getenv('USER'))
+    raw = g.token(os.getenv('PROJECT'))
+    print(raw)
+    print()
+    t = assert_token(raw)
     print(t)
