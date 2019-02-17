@@ -56,9 +56,10 @@ def assert_token(raw, public="public.pem"):
 
 
 if __name__ == '__main__':
+    import json
     g = Gitlab(os.getenv('GITLAB'))
     raw = g.token(os.getenv('PROJECT'), client_id='bob')
     print(raw)
     print()
     t = assert_token(raw, public='toto.pem')
-    print(t)
+    print(json.dumps(t, indent=2))
