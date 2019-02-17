@@ -32,6 +32,12 @@ pip install -r requirements.txt
 ./demo.py
 ```
 
+You can dump the certificate, with the python tool, installed in the `venv`
+
+```bash
+cat public.pem | x5092json | jq .
+```
+
 ### Licence
 
 3 terms BSD licences. © 2019 Mathieu Lecarme.
