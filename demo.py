@@ -6,6 +6,19 @@ import requests
 from authlib.specs.rfc7519 import jwt
 from x5092json import x509parser
 
+"""
+cryptography module is very picky with certificates:
+https://stackoverflow.com/questions/53337833/could-not-deserialize-key-data-on-decoding-jwt-python
+
+You can extaract the public key from the PEM certificate
+
+    openssl x509 -pubkey -noout -in cert.pem  > pubkey.pem
+
+But x5092json can open most pem files:
+https://github.com/jcrowgey/x5092json
+
+"""
+
 
 class Gitlab:
     "Gitlab server"
@@ -61,5 +74,5 @@ if __name__ == '__main__':
     raw = g.token(os.getenv('PROJECT'), client_id='bob')
     print(raw)
     print()
-    t = assert_token(raw, public='toto.pem')
+    t = assert_token(raw, public='public.pem')
     print(json.dumps(t, indent=2))
